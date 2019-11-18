@@ -1,12 +1,14 @@
 Package: rsrecovr
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Recover RStudio Files (Title Case)
+Version: 0.1
+Authors@R: person("Jonathan", "McPherson", email = "jonathan@rstudio.com",
+                  role = c("aut", "cre"))
+Description: Recovers unsaved changes or abandoned auto-save copies of files
+  previously opened in RStudio.
+Imports:
+  here
+License: MIT
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
