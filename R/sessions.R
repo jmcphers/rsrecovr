@@ -1,4 +1,5 @@
 
+# Recover sessions from a source folder
 recovr_sessions <- function(sources_folder, out_folder) {
   # extract all of the session folders from the sources folder
   folders <- list.files(sources_folder)

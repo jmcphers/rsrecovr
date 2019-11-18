@@ -40,14 +40,14 @@ recovr_source_file <- function(folder, id, out_folder) {
 
   # recover content
   contents_file <- file.path(folder, paste0(id, "-contents"))
-  if (file.exists(contents_file)) {
+  if (file.exists(contents_file) && file.info(contents_file)$size > 0) {
     # newer RStudio versions keep the contents alongside the metadata
     file.copy(from = contents_file, to = target)
   } else if (!is.null(metadata$contents) && nchar(metadata$contents) > 0) {
     # older versions use the "contents" value in the JSON metadata
     writeLines(metadata$contents, con = target)
   } else {
-    return(NA)
+    return(as.character(NA))
   }
 
   # return the file we created
