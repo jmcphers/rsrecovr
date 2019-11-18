@@ -1,5 +1,6 @@
 
-# Recover a single source file. Returns the path to the
+# Recover a single source file. Returns the path to the recovered file, or NA
+# if file recovery did not take place.
 recovr_source_file <- function(folder, id, out_folder) {
   metadata <- jsonlite::fromJSON(file.path(folder, id))
 
