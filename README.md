@@ -14,6 +14,15 @@ backup.
 This is an R package which extracts files from those backups. It can help you
 restore files you've accidentally deleted or unsaved changes lost in a crash.
 
+## Installation
+
+This package is currently available only on GitHub. To install it, use the
+`remotes` package:
+
+```r
+remotes::install_github("jmcphers/rsrecovr")
+```
+
 ## Usage
 
 There's just one exported function in this package, `recovr`. It has three forms.
