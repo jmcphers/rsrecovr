@@ -5,7 +5,7 @@ recovr_user <- function(out_folder) {
   # recover sessions for RStudio Desktop
   desktop_folder <- rstudio_desktop_folder()
   if (file.exists(desktop_folder)) {
-    results <- recovr_sessions(file.path(desktop_folder, "sources"))
+    results <- recovr_sessions(file.path(desktop_folder, "sources"), out_folder)
   }
 
   # recover sessions for RStudio Server
