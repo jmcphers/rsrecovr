@@ -7,7 +7,7 @@ Authors@R: person("Jonathan", "McPherson", email = "jonathan@rstudio.com",
 Description: Recovers unsaved changes or abandoned auto-save copies of files
   previously opened in RStudio.
 Imports:
-  here
+  rprojroot
 License: MIT
 Encoding: UTF-8
 LazyData: true
