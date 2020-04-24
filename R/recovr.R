@@ -9,6 +9,9 @@
 #'   and `"all"` to recover files from every recently used project and
 #'   session.
 #' @param out_folder The path to which recovered files should be written.
+#'   Defaults to the folder "recovered_XXX" in the root of the project
+#'   when run on a single project (where XXX is the current date/time),
+#'   or the current working directory if not.
 #' @param force Whether `out_folder` should be overwritten if it already exists.
 #'
 #' @return A data frame listing the recovered files.
@@ -26,7 +29,7 @@
 #' @export
 
 recovr <- function(project_path,
-                   out_folder = file.path(tempdir(), "rsrecovr"),
+                   out_folder = NULL,
                    force = FALSE) {
   if (missing(project_path)) {
     # user has not specified a project path; try to infer from working dir
@@ -41,6 +44,19 @@ recovr <- function(project_path,
     })
   }
 
+  # if the user did not specify an output folder, create one
+  if (is.null(out_folder)) {
+    stem <- paste0("recovered_", format(Sys.time(), "%Y%m%d%H%M"))
+    if (!is.null(project_path) && project_path != "all") {
+      # we are recovering a single project; put the recovery folder at
+      # the project root
+      out_folder <- file.path(project_path, stem)
+    } else {
+      # no project home; just use the current working directory
+      out_folder <- file.path(getwd(), stem)
+    }
+  }
+
   # establish output folder
   if (file.exists(out_folder)) {
     if (!isTRUE(force)) {
@@ -52,8 +68,9 @@ recovr <- function(project_path,
     unlink(out_folder, recursive = TRUE)
   }
 
-  # create the output folder
-  dir.create(out_folder, recursive = TRUE)
+  # create the output folder and saved/unsaved folders
+  dir.create(file.path(out_folder, "saved"), recursive = TRUE)
+  dir.create(file.path(out_folder, "unsaved"), recursive = TRUE)
 
   # recover requested content
   results <- if (is.null(project_path)) {

@@ -4,8 +4,7 @@
 \alias{recovr}
 \title{Recover RStudio Files}
 \usage{
-recovr(project_path, out_folder = file.path(tempdir(), "rsrecovr"),
-  force = FALSE)
+recovr(project_path, out_folder = NULL, force = FALSE)
 }
 \arguments{
 \item{project_path}{The project directory from which to recover files.
@@ -14,7 +13,10 @@ Typically a path on disk to the directory. Use the special value
 and \code{"all"} to recover files from every recently used project and
 session.}
 
-\item{out_folder}{The path to which recovered files should be written.}
+\item{out_folder}{The path to which recovered files should be written.
+Defaults to the folder "recovered_XXX" in the root of the project
+when run on a single project (where XXX is the current date/time),
+or the current working directory if not.}
 
 \item{force}{Whether \code{out_folder} should be overwritten if it already exists.}
 }

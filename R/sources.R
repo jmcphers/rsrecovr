@@ -25,6 +25,48 @@ recovr_source_file <- function(folder, id, out_folder) {
     basename(metadata$path)
   }
 
+  # recover content
+  contents_file <- file.path(folder, paste0(id, "-contents"))
+  contents <- if (file.exists(contents_file) && file.info(contents_file)$size > 0) {
+    # newer RStudio versions keep the contents alongside the metadata
+    readLines(con = contents_file)
+  } else if (!is.null(metadata$contents) && nchar(metadata$contents) > 0) {
+    # older versions use the "contents" value in the JSON metadata
+    metadata$contents
+  } else {
+    "No contents found"
+  }
+
+  # put it in saved/unsaved depending on whether or not the file is dirty
+  out_folder <- file.path(out_folder, if (isTRUE(metadata$dirty)) {
+    # explicitly marked dirty; we know it's unsaved
+    "unsaved"
+  } else {
+    # the dirty flag when unset doesn't reliably tell us if the contents differ
+    # from disk since they could have changed; compare contents here.
+    if (is.null(metadata$path)) {
+      # no file on disk to compare this to, so consider it to be saved
+      # (this is probably not a file buffer at all)
+      "saved"
+    } else {
+      if (file.exists(metadata$path)) {
+        old_contents <- readLines(metadata$path)
+        if (identical(contents, old_contents)) {
+          # the file's contents are the same as the contents on disk
+          "saved"
+        } else {
+          # the file in the source database is not the same; consider it
+          # unsaved
+          "unsaved"
+        }
+      } else {
+        # the file exists in the source database but not on disk, which should
+        # be considered unsaved
+        "unsaved"
+      }
+    }
+  })
+
   # ascertain target
   target <- file.path(out_folder, filename)
 
@@ -38,17 +80,8 @@ recovr_source_file <- function(folder, id, out_folder) {
         id, ".", tools::file_ext(filename)))
   }
 
-  # recover content
-  contents_file <- file.path(folder, paste0(id, "-contents"))
-  if (file.exists(contents_file) && file.info(contents_file)$size > 0) {
-    # newer RStudio versions keep the contents alongside the metadata
-    file.copy(from = contents_file, to = target)
-  } else if (!is.null(metadata$contents) && nchar(metadata$contents) > 0) {
-    # older versions use the "contents" value in the JSON metadata
-    writeLines(metadata$contents, con = target)
-  } else {
-    return(as.character(NA))
-  }
+  # save the contents to the file
+  writeLines(contents, con = target)
 
   # return the file we created
   target
@@ -74,3 +107,4 @@ recovr_sources <- function(folder, out_folder) {
     restored = recovred
   )
 }
+
